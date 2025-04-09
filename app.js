@@ -4,6 +4,7 @@ const { PrismaSessionStore } = require('@quixo3/prisma-session-store');
 const { PrismaClient } = require('./generated/prisma');
 const loginRouter = require('./routes/loginRouter');
 const signUpRouter = require('./routes/signUpRouter');
+const userRouter = require('./routes/userRouter');
 const path = require('path');
 const passport = require('passport');
 const app = express();
@@ -16,6 +17,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 // Middleware to parse URL-encoded data
 app.use(express.urlencoded({ extended: true }));
+
 // Setup Prisma Session Store
 app.use(
   expressSession({
@@ -40,6 +42,7 @@ require('./passport-config/passport-config');
 // Routes
 app.use('/login', loginRouter);
 app.use('/sign-up', signUpRouter);
+app.use('/', userRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
