@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app",
-    "build": "npx prisma migrate --name init",
+    "build": "npx prisma db push",
     "generate": "npx prisma generate"
   },
   "author": "",
