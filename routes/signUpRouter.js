@@ -1,5 +1,7 @@
 const { Router } = require('express');
 const { body, validationResult } = require('express-validator');
+const fs = require('fs').promises;
+const path = require('path');
 const prisma = require('../prismaClient');
 const bcrypt = require('bcryptjs');
 const signUpRouter = new Router();
@@ -20,7 +22,6 @@ signUpRouter.post(
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      console.log(errors.mapped());
       return res.render('register', {
         errors: errors.mapped(),
         oldData: req.body,
@@ -30,12 +31,17 @@ signUpRouter.post(
     const hash = await bcrypt.hash(password, 10);
 
     try {
-      await prisma.user.create({
+      const user = await prisma.user.create({
         data: {
           username,
           password: hash,
           email,
+          rootDir: { create: { name: 'root' } },
         },
+      });
+
+      fs.mkdir(path.join(__dirname, '../uploads', user.id), {
+        recursive: true,
       });
     } catch (error) {
       if (error.code == 'P2002') {

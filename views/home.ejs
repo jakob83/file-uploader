@@ -1,11 +1,402 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
-</head>
-<body>
-    <h1>Hello <%= user.username %></h1>
-</body>
+    <link rel="stylesheet" href="/index.css" />
+  </head>
+  <body>
+    <h1>Welcome <%= user.username %></h1>
+    <div class="forms">
+      <form
+        action="/<%= user.id %>/<%= currDirId %>/createDirectory"
+        method="post"
+      >
+        <h3>Create new Directory</h3>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required />
+        <button type="submit">Create</button>
+      </form>
+      <form
+        action="/<%= user.id %>/<%= currDirId %>/uploadFile"
+        method="post"
+        enctype="multipart/form-data"
+      >
+        <h3>Upload File</h3>
+        <label for="file">File:</label>
+        <input type="file" id="file" name="file" />
+        <button type="submit">Upload</button>
+      </form>
+    </div>
+
+    <div class="files-dirs">
+      <div class="folder-tree">
+        <% if(locals.folderTree){ %> <% folderTree.forEach((folder) => { %>
+        <a href="/<%= user.id %>/<%= folder.id %>"><%= folder.name %></a> > <%
+        }) %> <% } %>
+      </div>
+      <div class="files-dirs-grid">
+        <div class="grid-row header">
+          <div class="type"></div>
+          <div class="name">Name</div>
+          <div class="date">Date</div>
+          <div class="size">Size</div>
+        </div>
+        <% if (locals.subDirs) { %> <% subDirs.forEach(function (dir) { %> <%
+        const date = dir.createdAt; const year = date.getFullYear(); const month
+        = String(date.getMonth() + 1).padStart(2, '0'); const day =
+        String(date.getDate()).padStart(2, '0'); const formattedDate =
+        `${year}-${month}-${day}`; %>
+        <div class="row-container">
+          <div
+            class="grid-row folder"
+            onclick="window.location.href = '/<%= user.id %>/<%= dir.id %>'"
+          >
+            <div class="type">
+              <svg
+                width="30px"
+                height="30px"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M3 8.2C3 7.07989 3 6.51984 3.21799 6.09202C3.40973 5.71569 3.71569 5.40973 4.09202 5.21799C4.51984 5 5.0799 5 6.2 5H9.67452C10.1637 5 10.4083 5 10.6385 5.05526C10.8425 5.10425 11.0376 5.18506 11.2166 5.29472C11.4184 5.4184 11.5914 5.59135 11.9373 5.93726L12.0627 6.06274C12.4086 6.40865 12.5816 6.5816 12.7834 6.70528C12.9624 6.81494 13.1575 6.89575 13.3615 6.94474C13.5917 7 13.8363 7 14.3255 7H17.8C18.9201 7 19.4802 7 19.908 7.21799C20.2843 7.40973 20.5903 7.71569 20.782 8.09202C21 8.51984 21 9.0799 21 10.2V15.8C21 16.9201 21 17.4802 20.782 17.908C20.5903 18.2843 20.2843 18.5903 19.908 18.782C19.4802 19 18.9201 19 17.8 19H6.2C5.07989 19 4.51984 19 4.09202 18.782C3.71569 18.5903 3.40973 18.2843 3.21799 17.908C3 17.4802 3 16.9201 3 15.8V8.2Z"
+                  stroke="#000000"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></path>
+              </svg>
+            </div>
+            <div class="name"><%= dir.name %></div>
+            <div class="date"><%= formattedDate %></div>
+            <div class="size"></div>
+          </div>
+          <button
+            class="options"
+            onclick="showFolderOptions('<%= dir.id %>', '<%= dir.name %>', '<%= user.id %>')"
+          >
+            <svg
+              width="20px"
+              height="20px"
+              viewBox="0 0 48 48"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#000000"
+            >
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                <path d="M0 0h48v48H0z" fill="none"></path>
+                <g id="Shopicon">
+                  <circle cx="24" cy="24" r="5"></circle>
+                  <circle cx="24" cy="11" r="5"></circle>
+                  <circle cx="24" cy="37" r="5"></circle>
+                </g>
+              </g>
+            </svg>
+          </button>
+        </div>
+        <% }); %> <% } %> <% if (locals.files) { %> <% files.forEach(function
+        (file) { %> <% const date = file.createdAt; const year =
+        date.getFullYear(); const month = String(date.getMonth() +
+        1).padStart(2, '0'); const day = String(date.getDate()).padStart(2,
+        '0'); const formattedDate = `${year}-${month}-${day}`; %>
+        <div class="row-container">
+          <div class="grid-row file">
+            <div class="type">
+              <% if(file.mimeType.includes("image")){ %>
+              <svg
+                width="30px"
+                height="30px"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M18 4.25H6C5.27065 4.25 4.57118 4.53973 4.05546 5.05546C3.53973 5.57118 3.25 6.27065 3.25 7V17C3.25 17.7293 3.53973 18.4288 4.05546 18.9445C4.57118 19.4603 5.27065 19.75 6 19.75H18C18.7293 19.75 19.4288 19.4603 19.9445 18.9445C20.4603 18.4288 20.75 17.7293 20.75 17V7C20.75 6.27065 20.4603 5.57118 19.9445 5.05546C19.4288 4.53973 18.7293 4.25 18 4.25ZM6 5.75H18C18.3315 5.75 18.6495 5.8817 18.8839 6.11612C19.1183 6.35054 19.25 6.66848 19.25 7V15.19L16.53 12.47C16.4589 12.394 16.3717 12.3348 16.2748 12.2968C16.178 12.2587 16.0738 12.2427 15.97 12.25C15.865 12.2561 15.7622 12.2831 15.6678 12.3295C15.5733 12.3759 15.4891 12.4406 15.42 12.52L14.13 14.07L9.53 9.47C9.46222 9.39797 9.37993 9.34111 9.28858 9.30319C9.19723 9.26527 9.09887 9.24714 9 9.25C8.89496 9.25611 8.79221 9.28314 8.69776 9.32951C8.60331 9.37587 8.51908 9.44064 8.45 9.52L4.75 13.93V7C4.75 6.66848 4.8817 6.35054 5.11612 6.11612C5.35054 5.8817 5.66848 5.75 6 5.75ZM4.75 17V16.27L9.05 11.11L13.17 15.23L10.65 18.23H6C5.67192 18.23 5.35697 18.1011 5.12311 17.871C4.88926 17.6409 4.75525 17.328 4.75 17ZM18 18.25H12.6L16.05 14.11L19.2 17.26C19.1447 17.538 18.9951 17.7884 18.7764 17.9688C18.5577 18.1492 18.2835 18.2485 18 18.25Z"
+                    fill="#000000"
+                  ></path>
+                </g>
+              </svg>
+              <% } else if(file.mimeType.includes("pdf")){ %>
+              <svg
+                width="30px"
+                height="30px"
+                viewBox="0 0 15 15"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M2.5 6.5V6H2V6.5H2.5ZM6.5 6.5V6H6V6.5H6.5ZM6.5 10.5H6V11H6.5V10.5ZM13.5 3.5H14V3.29289L13.8536 3.14645L13.5 3.5ZM10.5 0.5L10.8536 0.146447L10.7071 0H10.5V0.5ZM2.5 7H3.5V6H2.5V7ZM3 11V8.5H2V11H3ZM3 8.5V6.5H2V8.5H3ZM3.5 8H2.5V9H3.5V8ZM4 7.5C4 7.77614 3.77614 8 3.5 8V9C4.32843 9 5 8.32843 5 7.5H4ZM3.5 7C3.77614 7 4 7.22386 4 7.5H5C5 6.67157 4.32843 6 3.5 6V7ZM6 6.5V10.5H7V6.5H6ZM6.5 11H7.5V10H6.5V11ZM9 9.5V7.5H8V9.5H9ZM7.5 6H6.5V7H7.5V6ZM9 7.5C9 6.67157 8.32843 6 7.5 6V7C7.77614 7 8 7.22386 8 7.5H9ZM7.5 11C8.32843 11 9 10.3284 9 9.5H8C8 9.77614 7.77614 10 7.5 10V11ZM10 6V11H11V6H10ZM10.5 7H13V6H10.5V7ZM10.5 9H12V8H10.5V9ZM2 5V1.5H1V5H2ZM13 3.5V5H14V3.5H13ZM2.5 1H10.5V0H2.5V1ZM10.1464 0.853553L13.1464 3.85355L13.8536 3.14645L10.8536 0.146447L10.1464 0.853553ZM2 1.5C2 1.22386 2.22386 1 2.5 1V0C1.67157 0 1 0.671573 1 1.5H2ZM1 12V13.5H2V12H1ZM2.5 15H12.5V14H2.5V15ZM14 13.5V12H13V13.5H14ZM12.5 15C13.3284 15 14 14.3284 14 13.5H13C13 13.7761 12.7761 14 12.5 14V15ZM1 13.5C1 14.3284 1.67157 15 2.5 15V14C2.22386 14 2 13.7761 2 13.5H1Z"
+                    fill="#000000"
+                  ></path>
+                </g>
+              </svg>
+              <% } else if(file.mimeType.includes("html")){ %>
+              <svg
+                width="30px"
+                height="30px"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    d="M7 8L3 11.6923L7 16M17 8L21 11.6923L17 16M14 4L10 20"
+                    stroke="#000000"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  ></path>
+                </g>
+              </svg>
+              <% } else if(file.mimeType.includes("javascript")){ %>
+              <svg
+                height="30px"
+                width="30px"
+                version="1.1"
+                id="_x32_"
+                xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
+                viewBox="0 0 512 512"
+                xml:space="preserve"
+                fill="#000000"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <style type="text/css">
+                    .st0 {
+                      fill: #000000;
+                    }
+                  </style>
+                  <g>
+                    <path
+                      class="st0"
+                      d="M378.413,0H208.297h-13.182L185.8,9.314L57.02,138.102l-9.314,9.314v13.176v265.514 c0,47.36,38.528,85.895,85.896,85.895h244.811c47.353,0,85.881-38.535,85.881-85.895V85.896C464.294,38.528,425.766,0,378.413,0z M432.497,426.105c0,29.877-24.214,54.091-54.084,54.091H133.602c-29.884,0-54.098-24.214-54.098-54.091V160.591h83.716 c24.885,0,45.077-20.178,45.077-45.07V31.804h170.116c29.87,0,54.084,24.214,54.084,54.092V426.105z"
+                    ></path>
+                    <path
+                      class="st0"
+                      d="M225.334,251.968c-5.711,0-9.915,4.078-9.915,10.592v50.803c0,11.409-5.027,15.62-12.638,15.62 c-2.988,0-6.102-0.95-8.281-2.444c-2.988-2.039-5.166-2.989-7.61-2.989c-5.027,0-8.826,3.666-8.826,8.42 c0,2.444,0.95,4.888,2.723,6.927c3.798,4.35,12.763,7.743,21.324,7.743c21.184,0,33.278-11.954,33.278-34.639V262.56 C235.389,256.046,231.171,251.968,225.334,251.968z"
+                    ></path>
+                    <path
+                      class="st0"
+                      d="M293.257,289.595l-4.888-0.684c-10.738-1.494-14.397-5.02-14.397-10.187c0-5.837,4.343-9.915,12.484-9.915 c5.711,0,11.423,1.634,15.891,3.805c1.913,0.95,3.953,1.494,5.852,1.494c4.888,0,8.686-3.666,8.686-8.693 c0-3.261-1.494-5.977-4.748-8.016c-5.432-3.394-15.627-6.11-25.806-6.11c-19.97,0-32.733,11.269-32.733,28.25 c0,16.304,10.32,25.13,29.199,27.713l4.888,0.677c11.004,1.494,14.258,4.888,14.258,10.32c0,6.389-5.293,10.872-15.067,10.872 c-6.801,0-12.234-1.767-19.83-5.977c-1.634-0.956-3.673-1.634-5.851-1.634c-5.153,0-8.965,3.938-8.965,8.832 c0,3.254,1.634,6.382,4.762,8.42c6.116,3.799,16.031,7.876,29.06,7.876c24.047,0,36.266-12.358,36.266-29.067 C322.317,300.865,312.403,292.311,293.257,289.595z"
+                    ></path>
+                  </g>
+                </g>
+              </svg>
+              <% } else{ %>
+              <svg
+                width="30px"
+                height="30px"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M16.0607 3H5.25V21H18.75V5.68934L16.0607 3ZM6.75 19.5V4.5H15.4393L17.25 6.31066V19.5H6.75ZM8.25 9.75H15.75V8.25H8.25V9.75ZM8.25 12.75H15.75V11.25H8.25V12.75ZM12 15.75H8.25V14.25H12V15.75Z"
+                    fill="#000000"
+                  ></path>
+                </g>
+              </svg>
+              <% } %>
+            </div>
+            <div class="name"><%= file.name %></div>
+            <div class="date"><%= formattedDate %></div>
+            <div class="size"><%= file.size / 1000 %> kb</div>
+          </div>
+          <button
+            class="options"
+            onclick="showFileOptions('<%= file.id %>', '<%= file.name %>', '<%= user.id %>')"
+          >
+            <svg
+              width="20px"
+              height="20px"
+              viewBox="0 0 48 48"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="#000000"
+            >
+              <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+              <g
+                id="SVGRepo_tracerCarrier"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              ></g>
+              <g id="SVGRepo_iconCarrier">
+                <path d="M0 0h48v48H0z" fill="none"></path>
+                <g id="Shopicon">
+                  <circle cx="24" cy="24" r="5"></circle>
+                  <circle cx="24" cy="11" r="5"></circle>
+                  <circle cx="24" cy="37" r="5"></circle>
+                </g>
+              </g>
+            </svg>
+          </button>
+        </div>
+        <% }); %> <% } %>
+      </div>
+    </div>
+    <script>
+      function showFolderOptions(folderId, folderName, userId) {
+        const body = document.querySelector('body');
+        const blurContainer = document.createElement('div');
+        blurContainer.className = 'blur';
+        const formContainer = document.createElement('div');
+        formContainer.className = 'form-container';
+        // Edit Form
+        const editForm = document.createElement('form');
+        editForm.method = 'post';
+        editForm.action = `/${userId}/${folderId}/editDirectory`;
+        const nameInput = document.createElement('input');
+        nameInput.id = 'name';
+        nameInput.name = 'name';
+        nameInput.type = 'text';
+        nameInput.value = folderName;
+        const nameLabel = document.createElement('label');
+        nameLabel.innerText = 'Name:';
+        nameLabel.htmlFor = 'name';
+        const btn = document.createElement('button');
+        btn.innerText = 'Edit';
+        editForm.className = 'edit-form';
+        // Delete Form
+        const deleteForm = document.createElement('form');
+        deleteForm.method = 'post';
+        deleteForm.action = `/${userId}/${folderId}/deleteDirectory`;
+        const deleteBtn = document.createElement('button');
+        deleteBtn.innerText = 'Delete';
+        deleteForm.className = 'delete-form';
+        // Appending Edit Form
+        editForm.appendChild(nameLabel);
+        editForm.appendChild(nameInput);
+        editForm.appendChild(btn);
+        // Header
+        const h2 = document.createElement('h2');
+        h2.innerText = 'Edit Directory:';
+        // Appending Delete Form
+        deleteForm.appendChild(deleteBtn);
+        formContainer.appendChild(h2);
+        formContainer.appendChild(editForm);
+        formContainer.appendChild(deleteForm);
+        blurContainer.appendChild(formContainer);
+        body.appendChild(blurContainer);
+
+        function handleClick(e) {
+          const formContainer = document.querySelector('.form-container');
+          if (!formContainer.contains(e.target)) {
+            const blur = document.querySelector('.blur');
+            blur.remove();
+            e.currentTarget.removeEventListener('click', handleClick);
+          }
+        }
+        setTimeout(() => {
+          document.body.addEventListener('click', handleClick);
+        }, 100);
+      }
+
+      function showFileOptions(fileId, fileName, userId) {
+        const body = document.querySelector('body');
+        const blurContainer = document.createElement('div');
+        blurContainer.className = 'blur';
+        const formContainer = document.createElement('div');
+        formContainer.className = 'form-container';
+        // Edit Form
+        const editForm = document.createElement('form');
+        editForm.method = 'post';
+        editForm.action = `/${userId}/${fileId}/editFile`;
+        const nameInput = document.createElement('input');
+        nameInput.id = 'fileName';
+        nameInput.type = 'text';
+        nameInput.value = fileName;
+        nameInput.name = 'name';
+        const nameLabel = document.createElement('label');
+        nameLabel.innerText = 'Name:';
+        nameLabel.htmlFor = 'fileName';
+        const btn = document.createElement('button');
+        btn.innerText = 'Edit';
+        editForm.className = 'edit-form';
+        // Delete Form
+        const deleteForm = document.createElement('form');
+        deleteForm.method = 'post';
+        deleteForm.action = `/${userId}/${fileId}/deleteFile`;
+        const deleteBtn = document.createElement('button');
+        deleteBtn.innerText = 'Delete';
+        deleteForm.className = 'delete-form';
+        // Appending Edit Form
+        editForm.appendChild(nameLabel);
+        editForm.appendChild(nameInput);
+        editForm.appendChild(btn);
+        // Header
+        const h2 = document.createElement('h2');
+        h2.innerText = 'Edit File:';
+        // Download Form
+        const downloadForm = document.createElement('form');
+        downloadForm.method = 'post';
+        downloadForm.action = `/${userId}/${fileId}/downloadFile`;
+        const downloadBtn = document.createElement('button');
+        downloadBtn.innerHTML = `
+<svg width="30px" height="30px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path opacity="0.5" d="M3 15C3 17.8284 3 19.2426 3.87868 20.1213C4.75736 21 6.17157 21 9 21H15C17.8284 21 19.2426 21 20.1213 20.1213C21 19.2426 21 17.8284 21 15" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M12 3V16M12 16L16 11.625M12 16L8 11.625" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>        `;
+        downloadForm.appendChild(downloadBtn);
+        // Appending
+        deleteForm.appendChild(deleteBtn);
+        formContainer.appendChild(h2);
+        formContainer.appendChild(editForm);
+        formContainer.appendChild(downloadForm);
+        formContainer.appendChild(deleteForm);
+        blurContainer.appendChild(formContainer);
+        body.appendChild(blurContainer);
+
+        function handleClick(e) {
+          const formContainer = document.querySelector('.form-container');
+          if (!formContainer.contains(e.target)) {
+            const blur = document.querySelector('.blur');
+            blur.remove();
+            e.currentTarget.removeEventListener('click', handleClick);
+          }
+        }
+        setTimeout(() => {
+          document.body.addEventListener('click', handleClick);
+        }, 100);
+      }
+    </script>
+  </body>
 </html>

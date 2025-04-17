@@ -1,0 +1,213 @@
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: rgb(223, 217, 217);
+  font-size: 16px;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
+h1 {
+  text-align: center;
+  font-size: 2rem;
+  color: rgb(50, 50, 50);
+  margin: 20px 0;
+}
+.forms {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10%;
+}
+.forms form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+  max-width: 400px;
+  background-color: white;
+  border: 1px solid rgb(200, 200, 200);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+form h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: rgb(50, 50, 50);
+}
+
+form label {
+  font-size: 0.9rem;
+  color: rgb(80, 80, 80);
+}
+
+form input[type='text'],
+form input[type='file'] {
+  padding: 8px;
+  font-size: 0.9rem;
+  border: 1px solid rgb(200, 200, 200);
+  border-radius: 4px;
+}
+
+form button {
+  padding: 10px;
+  font-size: 1rem;
+  color: white;
+  background-color: rgb(78, 75, 75);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+form button:hover {
+  background-color: rgb(50, 50, 50);
+}
+
+.files-dirs {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+}
+
+.files-dirs .folder {
+  font-weight: bold;
+  background-color: gray;
+}
+
+.folder-tree a {
+  font-size: 1.3rem;
+}
+
+.options {
+  position: absolute;
+  right: 400px;
+}
+.files-dirs-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: rgb(155, 136, 136);
+  padding: 5vw 5vw;
+  border-radius: 20px;
+  height: 100%;
+}
+
+.grid-row.header {
+  font-weight: bold;
+  background-color: rgb(78, 75, 75);
+  color: white;
+  padding: 20px;
+  border-radius: 5px;
+  text-align: left;
+}
+.grid-row.header:hover {
+  background-color: rgb(78, 75, 75);
+  cursor: default;
+}
+
+.grid-row {
+  display: flex;
+  align-items: center;
+  background-color: rgb(185, 183, 183);
+  padding: 10px;
+  border-radius: 5px;
+  transition: all 0.2s ease-in-out;
+  height: 100%;
+}
+
+.grid-row:hover {
+  background-color: rgb(148, 141, 141);
+  cursor: pointer;
+}
+
+.grid-row .type {
+  width: 40px;
+  text-align: center;
+}
+
+.grid-row .name {
+  flex: 2;
+  font-weight: bold;
+  height: 100%;
+}
+
+.grid-row .date {
+  flex: 1;
+  text-align: center;
+}
+
+.grid-row .size {
+  flex: 1;
+  text-align: center;
+}
+.row-container {
+  position: relative;
+}
+.options {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  transition: all 0.2s ease-in-out;
+  transform: translate(-50%, -50%);
+  padding: 5px 5px;
+  border-radius: 5px;
+}
+
+.options:hover {
+  background-color: rgb(87, 81, 81);
+}
+
+.blur {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(2px);
+}
+
+.form-container {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  padding: 2% 5%;
+  height: 100%;
+  max-height: 300px;
+  border-radius: 20px;
+  box-shadow: 10px 10px 40px;
+}
+
+.form-container form {
+  background-color: white;
+}
+.form-container .edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.form-container .delete-form button {
+  background-color: rgb(190, 23, 23);
+  transition: all 0.2s ease-in-out;
+}
+.form-container .delete-form button:hover {
+  background-color: darkred;
+}

@@ -121,7 +121,26 @@ exports.Prisma.UserScalarFieldEnum = {
   id: 'id',
   email: 'email',
   username: 'username',
-  password: 'password'
+  password: 'password',
+  rootDirId: 'rootDirId'
+};
+
+exports.Prisma.DirectoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt',
+  parentId: 'parentId'
+};
+
+exports.Prisma.FileScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  mimeType: 'mimeType',
+  path: 'path',
+  createdAt: 'createdAt',
+  size: 'size',
+  directoryId: 'directoryId'
 };
 
 exports.Prisma.SessionScalarFieldEnum = {
@@ -141,10 +160,17 @@ exports.Prisma.QueryMode = {
   insensitive: 'insensitive'
 };
 
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 
 exports.Prisma.ModelName = {
-  user: 'user',
-  session: 'session'
+  User: 'User',
+  Directory: 'Directory',
+  File: 'File',
+  Session: 'Session'
 };
 
 /**

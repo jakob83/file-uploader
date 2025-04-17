@@ -15,6 +15,8 @@ const PORT = process.env.PORT || 3000;
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 // Middleware to parse URL-encoded data
 app.use(express.urlencoded({ extended: true }));
 
@@ -40,9 +42,28 @@ app.use(passport.session());
 require('./passport-config/passport-config');
 
 // Routes
+function auth(req, res, next) {
+  const { userId } = req.params;
+  if (!req.isAuthenticated()) {
+    return res.redirect('/login?err=You must be logged in to view this page');
+  }
+  if (!req.user || req.user.id !== userId) {
+    return res.redirect('/login?err=You must be logged in to view this page');
+  }
+  return next();
+}
+
+app.get('/', (req, res) => {
+  if (!req.isAuthenticated()) {
+    return res.redirect(
+      '/login?err=You must be logged in to view this page Failed in "/"'
+    );
+  }
+  res.redirect(`/${req.user.id}`);
+});
 app.use('/login', loginRouter);
 app.use('/sign-up', signUpRouter);
-app.use('/', userRouter);
+app.use('/:userId', auth, userRouter);
 
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);

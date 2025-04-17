@@ -10,6 +10,7 @@ passport.use(
       try {
         const user = await prisma.user.findUnique({
           where: { email: email },
+          include: { rootDir: true },
         });
         if (!user) {
           return done(null, false, {

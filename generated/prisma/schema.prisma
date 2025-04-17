@@ -14,18 +14,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
-  id       String @id @default(uuid())
-  email    String @unique
-  username String
-  password String
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  username  String
+  password  String
+  rootDir   Directory @relation(fields: [rootDirId], references: [id])
+  rootDirId String    @unique
 
   @@map("users")
 }
 
-model session {
+model Directory {
+  id             String      @id @default(uuid())
+  name           String
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  parentId       String?
+  parent         Directory?  @relation("DirectoryToSubdirectories", fields: [parentId], references: [id])
+  subDirectories Directory[] @relation("DirectoryToSubdirectories")
+  files          File[]
+  user           User?
+
+  @@map("directories")
+}
+
+model File {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  mimeType    String
+  path        String
+  createdAt   DateTime  @default(now())
+  size        Int
+  directory   Directory @relation(fields: [directoryId], references: [id])
+  directoryId String
+
+  @@map("files")
+}
+
+model Session {
   id        String   @id
   sid       String   @unique
   data      String
   expiresAt DateTime
+
+  @@map("sessions")
 }
