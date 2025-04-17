@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app"
+    "start": "node app",
+    "build": "npx prisma migrate --name init",
+    "generate": "npx prisma generate"
   },
   "author": "",
   "license": "ISC",
